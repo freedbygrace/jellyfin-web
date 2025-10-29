@@ -1,0 +1,226 @@
+/**
+ * SyncPlay Member List Styles
+ * 
+ * Styles for the member list component showing detailed member information.
+ */
+
+.syncplay-member-list {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--background-color, #1a1a1a);
+    color: var(--text-color, #ffffff);
+
+    &.empty {
+        justify-content: center;
+        align-items: center;
+        
+        .empty-message {
+            color: var(--text-muted-color, #999);
+            font-style: italic;
+        }
+    }
+
+    .member-list-header {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color, #333);
+        
+        h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+    }
+
+    .member-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .member-item {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-color, #2a2a2a);
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background-color: var(--hover-background-color, #252525);
+        }
+
+        &.current-user {
+            background-color: var(--current-user-background, rgba(0, 122, 255, 0.1));
+            
+            .member-name {
+                font-weight: 600;
+            }
+        }
+
+        .member-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .member-name-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-name {
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .you-badge {
+            font-size: 0.75rem;
+            color: var(--accent-color, #007aff);
+            font-weight: normal;
+        }
+
+        .member-status-icons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .status-icon {
+            display: inline-flex;
+            align-items: center;
+            font-size: 1.2rem;
+
+            &.buffering {
+                color: var(--warning-color, #ff9500);
+                animation: pulse 1.5s ease-in-out infinite;
+            }
+
+            &.ready {
+                color: var(--success-color, #34c759);
+            }
+
+            .material-icons {
+                font-size: inherit;
+            }
+        }
+
+        .member-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ping-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .ping-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .ping-text {
+            color: var(--text-secondary-color, #ccc);
+        }
+
+        .ping-quality {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        // Ping quality specific styles
+        .ping-excellent .ping-dot {
+            box-shadow: 0 0 4px currentColor;
+        }
+
+        .ping-good .ping-dot {
+            box-shadow: 0 0 4px currentColor;
+        }
+
+        .ping-fair .ping-dot {
+            box-shadow: 0 0 4px currentColor;
+        }
+
+        .ping-poor .ping-dot {
+            box-shadow: 0 0 4px currentColor;
+            animation: blink 1s ease-in-out infinite;
+        }
+    }
+}
+
+// Animations
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.3;
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .syncplay-member-list {
+        .member-item {
+            padding: 0.6rem 0.8rem;
+        }
+
+        .member-name {
+            font-size: 0.9rem;
+        }
+
+        .ping-indicator {
+            font-size: 0.8rem;
+        }
+    }
+}
+
+// Dark theme adjustments
+@media (prefers-color-scheme: dark) {
+    .syncplay-member-list {
+        --background-color: #1a1a1a;
+        --text-color: #ffffff;
+        --text-muted-color: #999;
+        --text-secondary-color: #ccc;
+        --border-color: #333;
+        --hover-background-color: #252525;
+        --current-user-background: rgba(0, 122, 255, 0.15);
+        --accent-color: #0a84ff;
+        --warning-color: #ff9f0a;
+        --success-color: #30d158;
+    }
+}
+
+// Light theme adjustments
+@media (prefers-color-scheme: light) {
+    .syncplay-member-list {
+        --background-color: #ffffff;
+        --text-color: #000000;
+        --text-muted-color: #666;
+        --text-secondary-color: #555;
+        --border-color: #e0e0e0;
+        --hover-background-color: #f5f5f5;
+        --current-user-background: rgba(0, 122, 255, 0.08);
+        --accent-color: #007aff;
+        --warning-color: #ff9500;
+        --success-color: #34c759;
+    }
+}
+
