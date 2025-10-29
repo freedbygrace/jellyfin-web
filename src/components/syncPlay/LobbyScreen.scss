@@ -1,0 +1,337 @@
+/**
+ * SyncPlay Lobby Screen Styles
+ * 
+ * Styles for the lobby screen where users wait and mark themselves as ready.
+ */
+
+.syncplay-lobby-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: var(--background-color, #0f0f0f);
+    color: var(--text-color, #ffffff);
+    padding: 2rem;
+
+    .lobby-container {
+        max-width: 800px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .lobby-header {
+        text-align: center;
+
+        .lobby-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, var(--accent-color, #007aff), var(--accent-secondary, #5856d6));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .lobby-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary-color, #ccc);
+            margin: 0;
+        }
+    }
+
+    .lobby-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .lobby-status-card {
+        background: var(--card-background, #1a1a1a);
+        border-radius: 16px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+        .status-icon-container {
+            .status-icon {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .material-icons {
+                    font-size: 48px;
+                }
+
+                &.ready-icon {
+                    background: var(--success-color, #34c759);
+                    color: white;
+                    animation: scaleIn 0.3s ease-out;
+                }
+
+                &.waiting-icon {
+                    background: var(--warning-color, #ff9500);
+                    color: white;
+                    animation: pulse 2s ease-in-out infinite;
+                }
+            }
+        }
+
+        .status-text {
+            text-align: center;
+
+            .status-title {
+                font-size: 1.8rem;
+                font-weight: 600;
+                margin: 0 0 0.5rem 0;
+            }
+
+            .status-description {
+                font-size: 1.1rem;
+                color: var(--text-secondary-color, #ccc);
+                margin: 0;
+            }
+        }
+
+        .ready-progress {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            .progress-bar {
+                width: 100%;
+                height: 8px;
+                background: var(--progress-track, #2a2a2a);
+                border-radius: 4px;
+                overflow: hidden;
+
+                .progress-fill {
+                    height: 100%;
+                    background: linear-gradient(90deg, var(--accent-color, #007aff), var(--success-color, #34c759));
+                    transition: width 0.3s ease;
+                    border-radius: 4px;
+                }
+            }
+
+            .progress-labels {
+                display: flex;
+                gap: 0.5rem;
+                justify-content: center;
+                flex-wrap: wrap;
+
+                .member-indicator {
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    transition: all 0.3s ease;
+
+                    &.ready {
+                        background: var(--success-color, #34c759);
+                        box-shadow: 0 0 8px var(--success-color, #34c759);
+                    }
+
+                    &.not-ready {
+                        background: var(--text-muted-color, #666);
+                    }
+                }
+            }
+        }
+    }
+
+    .lobby-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+
+            .material-icons {
+                font-size: 24px;
+            }
+
+            &:active {
+                transform: scale(0.98);
+            }
+        }
+
+        .ready-button {
+            &.not-ready {
+                background: var(--accent-color, #007aff);
+                color: white;
+
+                &:hover {
+                    background: var(--accent-color-hover, #0066cc);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+                }
+            }
+
+            &.ready {
+                background: var(--success-color, #34c759);
+                color: white;
+
+                &:hover {
+                    background: var(--success-color-hover, #2db84d);
+                }
+            }
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, var(--success-color, #34c759), var(--success-secondary, #30d158));
+            color: white;
+            animation: pulse 2s ease-in-out infinite;
+
+            &:hover {
+                animation: none;
+                transform: translateY(-2px) scale(1.02);
+                box-shadow: 0 6px 20px rgba(52, 199, 89, 0.4);
+            }
+        }
+    }
+
+    .lobby-members {
+        background: var(--card-background, #1a1a1a);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        max-height: 400px;
+    }
+
+    .lobby-footer {
+        text-align: center;
+
+        .lobby-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: var(--text-muted-color, #999);
+            font-size: 0.9rem;
+            margin: 0;
+
+            .material-icons {
+                font-size: 18px;
+            }
+        }
+    }
+}
+
+// Animations
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.02);
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .syncplay-lobby-screen {
+        padding: 1rem;
+
+        .lobby-header {
+            .lobby-title {
+                font-size: 2rem;
+            }
+
+            .lobby-subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        .lobby-status-card {
+            padding: 1.5rem;
+
+            .status-icon-container .status-icon {
+                width: 60px;
+                height: 60px;
+
+                .material-icons {
+                    font-size: 36px;
+                }
+            }
+
+            .status-text .status-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        .lobby-actions button {
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+        }
+    }
+}
+
+// Dark theme
+@media (prefers-color-scheme: dark) {
+    .syncplay-lobby-screen {
+        --background-color: #0f0f0f;
+        --card-background: #1a1a1a;
+        --text-color: #ffffff;
+        --text-secondary-color: #ccc;
+        --text-muted-color: #999;
+        --accent-color: #0a84ff;
+        --accent-color-hover: #0070e0;
+        --accent-secondary: #5e5ce6;
+        --success-color: #30d158;
+        --success-color-hover: #28c04d;
+        --success-secondary: #32d74b;
+        --warning-color: #ff9f0a;
+        --progress-track: #2a2a2a;
+    }
+}
+
+// Light theme
+@media (prefers-color-scheme: light) {
+    .syncplay-lobby-screen {
+        --background-color: #f5f5f7;
+        --card-background: #ffffff;
+        --text-color: #000000;
+        --text-secondary-color: #555;
+        --text-muted-color: #666;
+        --accent-color: #007aff;
+        --accent-color-hover: #0066cc;
+        --accent-secondary: #5856d6;
+        --success-color: #34c759;
+        --success-color-hover: #2db84d;
+        --success-secondary: #30d158;
+        --warning-color: #ff9500;
+        --progress-track: #e0e0e0;
+    }
+}
+
