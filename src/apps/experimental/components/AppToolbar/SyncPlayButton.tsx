@@ -1,29 +1,86 @@
+import type { GroupInfoDto } from '@jellyfin/sdk/lib/generated-client/models/group-info-dto';
 import { SyncPlayUserAccessType } from '@jellyfin/sdk/lib/generated-client/models/sync-play-user-access-type';
 import Groups from '@mui/icons-material/Groups';
+import Badge from '@mui/material/Badge';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { pluginManager } from 'components/pluginManager';
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
 import { PluginType } from 'types/plugin';
+import Events, { Event } from 'utils/events';
 
 import AppSyncPlayMenu, { ID } from './menus/SyncPlayMenu';
+import SyncPlayDialog from './SyncPlayDialog';
+
+interface SyncPlayInstance {
+    Manager: {
+        getGroupInfo: () => GroupInfoDto | null | undefined;
+    };
+}
 
 const SyncPlayButton = () => {
     const { user } = useApi();
 
-    const [ syncPlayMenuAnchorEl, setSyncPlayMenuAnchorEl ] = useState<null | HTMLElement>(null);
+    const [syncPlayMenuAnchorEl, setSyncPlayMenuAnchorEl] = useState<null | HTMLElement>(null);
+    const [syncPlayDialogOpen, setSyncPlayDialogOpen] = useState(false);
+    const [syncPlay, setSyncPlay] = useState<SyncPlayInstance>();
+    const [currentGroup, setCurrentGroup] = useState<GroupInfoDto>();
+    const [memberCount, setMemberCount] = useState(0);
+
     const isSyncPlayMenuOpen = Boolean(syncPlayMenuAnchorEl);
+    const isInGroup = Boolean(currentGroup);
+
+    useEffect(() => {
+        setSyncPlay(pluginManager.firstOfType(PluginType.SyncPlay)?.instance);
+    }, []);
+
+    const updateSyncPlayGroup = useCallback((_e: Event, enabled: boolean) => {
+        if (syncPlay && enabled) {
+            const group = syncPlay.Manager.getGroupInfo();
+            setCurrentGroup(group ?? undefined);
+            setMemberCount(group?.Participants?.length || 0);
+        } else {
+            setCurrentGroup(undefined);
+            setMemberCount(0);
+        }
+    }, [syncPlay]);
+
+    useEffect(() => {
+        if (!syncPlay) return;
+
+        Events.on(syncPlay.Manager, 'enabled', updateSyncPlayGroup);
+
+        // Initialize current group
+        const group = syncPlay.Manager.getGroupInfo();
+        if (group) {
+            setCurrentGroup(group);
+            setMemberCount(group.Participants?.length || 0);
+        }
+
+        return () => {
+            Events.off(syncPlay.Manager, 'enabled', updateSyncPlayGroup);
+        };
+    }, [updateSyncPlayGroup, syncPlay]);
 
     const onSyncPlayButtonClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
-        setSyncPlayMenuAnchorEl(event.currentTarget);
-    }, [ setSyncPlayMenuAnchorEl ]);
+        // If in a group, open the dialog; otherwise open the menu
+        if (isInGroup) {
+            setSyncPlayDialogOpen(true);
+        } else {
+            setSyncPlayMenuAnchorEl(event.currentTarget);
+        }
+    }, [isInGroup]);
 
     const onSyncPlayMenuClose = useCallback(() => {
         setSyncPlayMenuAnchorEl(null);
-    }, [ setSyncPlayMenuAnchorEl ]);
+    }, []);
+
+    const onSyncPlayDialogClose = useCallback(() => {
+        setSyncPlayDialogOpen(false);
+    }, []);
 
     if (
         // SyncPlay not enabled for user
@@ -34,18 +91,28 @@ const SyncPlayButton = () => {
         return null;
     }
 
+    const tooltipTitle = isInGroup
+        ? `${globalize.translate('ButtonSyncPlay')}: ${currentGroup?.GroupName || ''}`
+        : globalize.translate('ButtonSyncPlay');
+
     return (
         <>
-            <Tooltip title={globalize.translate('ButtonSyncPlay')}>
+            <Tooltip title={tooltipTitle}>
                 <IconButton
                     size='large'
                     aria-label={globalize.translate('ButtonSyncPlay')}
                     aria-controls={ID}
                     aria-haspopup='true'
                     onClick={onSyncPlayButtonClick}
-                    color='inherit'
+                    color={isInGroup ? 'primary' : 'inherit'}
                 >
-                    <Groups />
+                    <Badge
+                        badgeContent={memberCount}
+                        color="primary"
+                        invisible={!isInGroup}
+                    >
+                        <Groups />
+                    </Badge>
                 </IconButton>
             </Tooltip>
 
@@ -53,6 +120,11 @@ const SyncPlayButton = () => {
                 open={isSyncPlayMenuOpen}
                 anchorEl={syncPlayMenuAnchorEl}
                 onMenuClose={onSyncPlayMenuClose}
+            />
+
+            <SyncPlayDialog
+                open={syncPlayDialogOpen}
+                onClose={onSyncPlayDialogClose}
             />
         </>
     );

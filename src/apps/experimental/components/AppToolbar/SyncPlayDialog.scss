@@ -1,0 +1,61 @@
+.syncplay-dialog {
+    .MuiDialog-paper {
+        min-height: 500px;
+        max-height: 80vh;
+    }
+}
+
+.syncplay-dialog-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+
+    .syncplay-dialog-title-text {
+        font-size: 1.25rem;
+        font-weight: 500;
+        flex: 1;
+    }
+
+    .syncplay-dialog-close-button {
+        margin-left: 16px;
+    }
+}
+
+.syncplay-dialog-tabs {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    
+    .MuiTab-root {
+        min-height: 48px;
+        text-transform: none;
+        font-size: 0.9375rem;
+        font-weight: 500;
+    }
+}
+
+.syncplay-dialog-content {
+    padding: 0 !important;
+    overflow-y: auto;
+
+    .MuiBox-root {
+        padding: 0 !important;
+    }
+}
+
+.syncplay-tab-placeholder {
+    padding: 24px;
+    min-height: 400px;
+}
+
+/* Light theme adjustments */
+@media (prefers-color-scheme: light) {
+    .syncplay-dialog-title {
+        border-bottom-color: rgba(0, 0, 0, 0.12);
+    }
+
+    .syncplay-dialog-tabs {
+        border-bottom-color: rgba(0, 0, 0, 0.12);
+    }
+}
+
