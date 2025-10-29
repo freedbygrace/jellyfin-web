@@ -12,9 +12,10 @@ import type { ApiClient } from 'jellyfin-apiclient';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { pluginManager } from 'components/pluginManager';
-import { MemberList } from 'components/syncPlay';
+import { MemberList, ChatPanel } from 'components/syncPlay';
 import type { GroupMemberInfo } from 'types/syncPlay';
 import { useApi } from 'hooks/useApi';
+import { useSyncPlayEnhancements } from 'hooks/useSyncPlayEnhancements';
 import globalize from 'lib/globalize';
 import { PluginType } from 'types/plugin';
 import Events, { Event } from 'utils/events';
@@ -93,6 +94,16 @@ const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
     useEffect(() => {
         setSyncPlay(pluginManager.firstOfType(PluginType.SyncPlay)?.instance);
     }, []);
+
+    // Use the SyncPlay enhancements hook for chat functionality
+    const {
+        messages,
+        sendMessage,
+        isLoading: chatLoading
+    } = useSyncPlayEnhancements({
+        apiClient: __legacyApiClient__,
+        autoLoad: open // Only load when dialog is open
+    });
 
     const handleTabChange = useCallback((_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
@@ -176,10 +187,19 @@ const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={1}>
-                    <div className="syncplay-tab-placeholder">
-                        {/* Chat tab content will go here */}
-                        <p>Chat for group: {groupId}</p>
-                    </div>
+                    {groupId ? (
+                        <ChatPanel
+                            messages={messages}
+                            currentUserId={user?.Id || ''}
+                            onSendMessage={sendMessage}
+                            isLoading={chatLoading}
+                            disabled={!groupId}
+                        />
+                    ) : (
+                        <div className="syncplay-tab-empty">
+                            <p>{globalize.translate('MessageNotInSyncPlayGroup')}</p>
+                        </div>
+                    )}
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={2}>
