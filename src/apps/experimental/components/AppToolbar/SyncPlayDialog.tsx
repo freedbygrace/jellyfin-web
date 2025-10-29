@@ -12,8 +12,8 @@ import type { ApiClient } from 'jellyfin-apiclient';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { pluginManager } from 'components/pluginManager';
-import { MemberList, ChatPanel } from 'components/syncPlay';
-import type { GroupMemberInfo } from 'types/syncPlay';
+import { MemberList, ChatPanel, LobbyScreen } from 'components/syncPlay';
+import type { GroupMemberInfo, GroupInfo } from 'types/syncPlay';
 import { useApi } from 'hooks/useApi';
 import { useSyncPlayEnhancements } from 'hooks/useSyncPlayEnhancements';
 import globalize from 'lib/globalize';
@@ -95,10 +95,12 @@ const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
         setSyncPlay(pluginManager.firstOfType(PluginType.SyncPlay)?.instance);
     }, []);
 
-    // Use the SyncPlay enhancements hook for chat functionality
+    // Use the SyncPlay enhancements hook for chat and lobby functionality
     const {
+        group: enhancedGroup,
         messages,
         sendMessage,
+        setReady,
         isLoading: chatLoading
     } = useSyncPlayEnhancements({
         apiClient: __legacyApiClient__,
@@ -108,6 +110,13 @@ const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
     const handleTabChange = useCallback((_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     }, []);
+
+    const handleStartPlayback = useCallback(() => {
+        if (__legacyApiClient__ && syncPlay) {
+            syncPlay.Manager.resumeGroupPlayback(__legacyApiClient__);
+            onClose(); // Close dialog when playback starts
+        }
+    }, [__legacyApiClient__, syncPlay, onClose]);
 
     const updateSyncPlayGroup = useCallback((_e: Event, enabled: boolean) => {
         if (syncPlay && enabled) {
@@ -203,10 +212,19 @@ const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={2}>
-                    <div className="syncplay-tab-placeholder">
-                        {/* Lobby tab content will go here */}
-                        <p>Lobby - Ready System</p>
-                    </div>
+                    {enhancedGroup ? (
+                        <LobbyScreen
+                            group={enhancedGroup}
+                            currentUserId={user?.Id || ''}
+                            onToggleReady={setReady}
+                            onStartPlayback={handleStartPlayback}
+                            isGroupOwner={false} // TODO: Determine if user is group owner
+                        />
+                    ) : (
+                        <div className="syncplay-tab-empty">
+                            <p>{globalize.translate('MessageNotInSyncPlayGroup')}</p>
+                        </div>
+                    )}
                 </TabPanel>
             </DialogContent>
         </Dialog>
