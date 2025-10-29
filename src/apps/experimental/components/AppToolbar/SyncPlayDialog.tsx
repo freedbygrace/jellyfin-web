@@ -1,4 +1,5 @@
 import type { GroupInfoDto } from '@jellyfin/sdk/lib/generated-client/models/group-info-dto';
+import type { GroupMemberInfoDto } from '@jellyfin/sdk/lib/generated-client/models/group-member-info-dto';
 import Close from '@mui/icons-material/Close';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
@@ -11,6 +12,8 @@ import type { ApiClient } from 'jellyfin-apiclient';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { pluginManager } from 'components/pluginManager';
+import { MemberList } from 'components/syncPlay';
+import type { GroupMemberInfo } from 'types/syncPlay';
 import { useApi } from 'hooks/useApi';
 import globalize from 'lib/globalize';
 import { PluginType } from 'types/plugin';
@@ -65,6 +68,19 @@ function a11yProps(index: number) {
     return {
         id: `syncplay-tab-${index}`,
         'aria-controls': `syncplay-tabpanel-${index}`
+    };
+}
+
+/**
+ * Convert SDK GroupMemberInfoDto to our GroupMemberInfo type
+ */
+function convertMemberInfo(member: GroupMemberInfoDto): GroupMemberInfo {
+    return {
+        userId: member.UserId || '',
+        userName: member.UserName || 'Unknown',
+        ping: Number(member.Ping) || 0,
+        isBuffering: member.IsBuffering || false,
+        isReady: member.IsReady || false
     };
 }
 
@@ -146,15 +162,17 @@ const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
 
             <DialogContent className="syncplay-dialog-content">
                 <TabPanel value={tabValue} index={0}>
-                    <div className="syncplay-tab-placeholder">
-                        {/* Members tab content will go here */}
-                        <p>Members: {currentGroup?.Participants?.length || 0}</p>
-                        {currentGroup?.Participants?.map((participant, index) => (
-                            <div key={index}>
-                                {participant}
-                            </div>
-                        ))}
-                    </div>
+                    {currentGroup?.Members && currentGroup.Members.length > 0 ? (
+                        <MemberList
+                            members={currentGroup.Members.map(convertMemberInfo)}
+                            currentUserId={user?.Id}
+                            showDetailedPing={true}
+                        />
+                    ) : (
+                        <div className="syncplay-tab-empty">
+                            <p>{globalize.translate('MessageNoMembersInGroup')}</p>
+                        </div>
+                    )}
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={1}>
