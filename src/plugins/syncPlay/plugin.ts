@@ -46,6 +46,9 @@ class SyncPlayPlugin implements Plugin {
         Events.on(ServerConnections, 'apiclientcreated', (_, newApiClient) => SyncPlay.Manager.init(newApiClient));
         Events.on(ServerConnections, 'localusersignedin', () => SyncPlay.Manager.updateApiClient(ServerConnections.currentApiClient()));
         Events.on(ServerConnections, 'localusersignedout', () => SyncPlay.Manager.updateApiClient(ServerConnections.currentApiClient()));
+
+        // Expose SyncPlay globally for React components to access
+        (window as any).SyncPlay = SyncPlay;
     }
 }
 

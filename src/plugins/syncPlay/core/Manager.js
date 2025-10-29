@@ -238,6 +238,16 @@ class Manager {
             case 'LibraryAccessDenied':
                 toast(globalize.translate('MessageSyncPlayLibraryAccessDenied'));
                 break;
+            case 'ChatMessage':
+                // Phase 2: Handle chat message updates
+                console.debug('SyncPlay: Chat message received', cmd.Data);
+                Events.trigger(this, 'syncplay-chatmessage', [cmd.Data]);
+                break;
+            case 'UserReady':
+                // Phase 3: Handle ready state updates
+                console.debug('SyncPlay: User ready state changed', cmd.Data);
+                Events.trigger(this, 'syncplay-userready', [cmd.Data]);
+                break;
             default:
                 console.error(`SyncPlay processGroupUpdate: command ${cmd.Type} not recognised.`);
                 break;
