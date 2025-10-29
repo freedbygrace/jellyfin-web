@@ -1,6 +1,7 @@
 import type { GroupInfoDto } from '@jellyfin/sdk/lib/generated-client/models/group-info-dto';
 import type { GroupMemberInfoDto } from '@jellyfin/sdk/lib/generated-client/models/group-member-info-dto';
 import Close from '@mui/icons-material/Close';
+import Badge from '@mui/material/Badge';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -90,6 +91,7 @@ const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
     const { __legacyApiClient__, user } = useApi();
     const [currentGroup, setCurrentGroup] = useState<GroupInfoDto>();
     const [tabValue, setTabValue] = useState(0);
+    const [lastReadMessageCount, setLastReadMessageCount] = useState(0);
 
     useEffect(() => {
         setSyncPlay(pluginManager.firstOfType(PluginType.SyncPlay)?.instance);
@@ -106,6 +108,16 @@ const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
         apiClient: __legacyApiClient__,
         autoLoad: open // Only load when dialog is open
     });
+
+    // Track unread messages
+    const unreadCount = Math.max(0, messages.length - lastReadMessageCount);
+
+    // Mark messages as read when chat tab is viewed
+    useEffect(() => {
+        if (tabValue === 1 && messages.length > 0) {
+            setLastReadMessageCount(messages.length);
+        }
+    }, [tabValue, messages.length]);
 
     const handleTabChange = useCallback((_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
@@ -176,7 +188,14 @@ const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
                 variant="fullWidth"
             >
                 <Tab label={globalize.translate('Members')} {...a11yProps(0)} />
-                <Tab label={globalize.translate('Chat')} {...a11yProps(1)} />
+                <Tab
+                    label={
+                        <Badge badgeContent={unreadCount} color="error">
+                            {globalize.translate('Chat')}
+                        </Badge>
+                    }
+                    {...a11yProps(1)}
+                />
                 <Tab label={globalize.translate('Lobby')} {...a11yProps(2)} />
             </Tabs>
 

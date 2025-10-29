@@ -29,6 +29,7 @@ const SyncPlayButton = () => {
     const [syncPlay, setSyncPlay] = useState<SyncPlayInstance>();
     const [currentGroup, setCurrentGroup] = useState<GroupInfoDto>();
     const [memberCount, setMemberCount] = useState(0);
+    const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
 
     const isSyncPlayMenuOpen = Boolean(syncPlayMenuAnchorEl);
     const isInGroup = Boolean(currentGroup);
@@ -48,10 +49,18 @@ const SyncPlayButton = () => {
         }
     }, [syncPlay]);
 
+    const handleChatMessage = useCallback(() => {
+        // Set unread flag when a new message arrives and dialog is closed
+        if (!syncPlayDialogOpen) {
+            setHasUnreadMessages(true);
+        }
+    }, [syncPlayDialogOpen]);
+
     useEffect(() => {
         if (!syncPlay) return;
 
         Events.on(syncPlay.Manager, 'enabled', updateSyncPlayGroup);
+        Events.on(syncPlay.Manager, 'syncplay-chatmessage', handleChatMessage);
 
         // Initialize current group
         const group = syncPlay.Manager.getGroupInfo();
@@ -62,13 +71,15 @@ const SyncPlayButton = () => {
 
         return () => {
             Events.off(syncPlay.Manager, 'enabled', updateSyncPlayGroup);
+            Events.off(syncPlay.Manager, 'syncplay-chatmessage', handleChatMessage);
         };
-    }, [updateSyncPlayGroup, syncPlay]);
+    }, [updateSyncPlayGroup, syncPlay, handleChatMessage]);
 
     const onSyncPlayButtonClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
         // If in a group, open the dialog; otherwise open the menu
         if (isInGroup) {
             setSyncPlayDialogOpen(true);
+            setHasUnreadMessages(false); // Clear unread flag when opening dialog
         } else {
             setSyncPlayMenuAnchorEl(event.currentTarget);
         }
@@ -111,7 +122,13 @@ const SyncPlayButton = () => {
                         color="primary"
                         invisible={!isInGroup}
                     >
-                        <Groups />
+                        <Badge
+                            variant="dot"
+                            color="error"
+                            invisible={!hasUnreadMessages}
+                        >
+                            <Groups />
+                        </Badge>
                     </Badge>
                 </IconButton>
             </Tooltip>
