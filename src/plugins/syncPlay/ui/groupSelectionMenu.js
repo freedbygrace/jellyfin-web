@@ -9,7 +9,7 @@ import { ServerConnections } from 'lib/jellyfin-apiclient';
 import { PluginType } from '../../../types/plugin.ts';
 import Events from '../../../utils/events.ts';
 
-import prompt from '../../../components/prompt/prompt';
+import CreateGroupDialog from './createGroupDialog';
 
 import './groupSelectionMenu.scss';
 
@@ -89,18 +89,20 @@ class GroupSelectionMenu {
                 actionsheet.show(menuOptions).then((id) => {
                     if (id == 'new-group') {
                         const defaultName = globalize.translate('SyncPlayGroupDefaultTitle', user.localUser.Name);
-                        prompt({
-                            title: globalize.translate('LabelSyncPlayNewGroup'),
-                            label: globalize.translate('LabelName'),
-                            value: defaultName
-                        }).then((name) => {
-                            const groupName = (name || '').trim();
-                            if (groupName) {
-                                apiClient.createSyncPlayGroup({
-                                    GroupName: groupName
-                                });
-                            }
-                        }).catch(() => { /* cancelled */ });
+                        new CreateGroupDialog(apiClient, this.SyncPlay?.Manager)
+                            .embed({
+                                defaultName,
+                                positionTo: button,
+                                onCreated: ({ positionTo }) => {
+                                    // After creation, open the group menu so user can access settings or leave
+                                    try {
+                                        this.showLeaveGroupSelection(positionTo, user, apiClient);
+                                    } catch (e) {
+                                        console.error('SyncPlay: failed to open group menu after creation', e);
+                                    }
+                                }
+                            })
+                            .catch((err) => { if (err) { /* dialog cancelled */ } });
                     } else if (id) {
                         apiClient.joinSyncPlayGroup({
                             GroupId: id

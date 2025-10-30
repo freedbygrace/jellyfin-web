@@ -1,0 +1,27 @@
+<div class="formDialogHeader">
+    <button is="paper-icon-button-light" class="btnCancel autoSize" tabindex="-1" title="${ButtonBack}">
+        <span class="material-icons arrow_back" aria-hidden="true"></span>
+    </button>
+    <h3 class="formDialogHeaderTitle">${LabelSyncPlayNewGroup}</h3>
+</div>
+
+<div class="formDialogContent smoothScrollY">
+    <div class="dialogContentInner dialog-content-centered" style="padding-top:1.5em;">
+        <form style="margin:auto;">
+            <div class="inputContainer inputContainer-withDescription">
+                <input is="emby-input" type="text" id="txtGroupName" label="${LabelName}" />
+                <div class="fieldDescription">${LabelSyncPlayNewGroupDescription}</div>
+            </div>
+        </form>
+
+        <div class="formDialogFooter" id="footer">
+            <button is="emby-button" type="button" class="raised button-submit block btnCreate formDialogFooterItem">
+                <span>${LabelSyncPlayNewGroup}</span>
+            </button>
+            <button is="emby-button" type="button" class="raised block btnSettings formDialogFooterItem">
+                <span>${Settings}</span>
+            </button>
+        </div>
+    </div>
+</div>
+
