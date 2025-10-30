@@ -27,7 +27,8 @@ import Events, { Event } from 'utils/events';
 export const ID = 'app-sync-play-menu';
 
 interface SyncPlayMenuProps extends MenuProps {
-    onMenuClose: () => void
+    onMenuClose: () => void;
+    onOpenCreateDialog: () => void;
 }
 
 interface SyncPlayInstance {
@@ -44,7 +45,8 @@ interface SyncPlayInstance {
 const SyncPlayMenu: FC<SyncPlayMenuProps> = ({
     anchorEl,
     open,
-    onMenuClose
+    onMenuClose,
+    onOpenCreateDialog
 }) => {
     const [ syncPlay, setSyncPlay ] = useState<SyncPlayInstance>();
     const { __legacyApiClient__, api, user } = useApi();
@@ -58,20 +60,9 @@ const SyncPlayMenu: FC<SyncPlayMenuProps> = ({
     const { data: groups } = useSyncPlayGroups();
 
     const onGroupAddClick = useCallback(() => {
-        if (api && user) {
-            getSyncPlayApi(api)
-                .syncPlayCreateGroup({
-                    newGroupRequestDto: {
-                        GroupName: globalize.translate('SyncPlayGroupDefaultTitle', user.Name)
-                    }
-                })
-                .catch(err => {
-                    console.error('[SyncPlayMenu] failed to create a SyncPlay group', err);
-                });
-
-            onMenuClose();
-        }
-    }, [ api, onMenuClose, user ]);
+        onOpenCreateDialog();
+        onMenuClose();
+    }, [ onOpenCreateDialog, onMenuClose ]);
 
     const onGroupLeaveClick = useCallback(() => {
         if (api) {

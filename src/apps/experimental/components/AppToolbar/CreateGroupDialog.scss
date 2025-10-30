@@ -1,0 +1,83 @@
+.create-group-dialog {
+    .create-group-dialog-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, rgba(0, 150, 136, 0.1) 0%, rgba(0, 150, 136, 0.05) 100%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+        .create-group-dialog-title-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+
+            .create-group-dialog-icon {
+                font-size: 1.75rem;
+                color: #009688;
+            }
+
+            .create-group-dialog-title-text {
+                font-size: 1.25rem;
+                font-weight: 500;
+            }
+        }
+
+        .create-group-dialog-close-button {
+            color: rgba(255, 255, 255, 0.7);
+
+            &:hover {
+                color: rgba(255, 255, 255, 1);
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+        }
+    }
+
+    .create-group-dialog-content {
+        padding: 2rem 1.5rem;
+        min-height: 200px;
+
+        .create-group-dialog-description {
+            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        .create-group-dialog-input {
+            margin-top: 1rem;
+
+            .MuiOutlinedInput-root {
+                &.Mui-focused fieldset {
+                    border-color: #009688;
+                }
+            }
+
+            .MuiInputLabel-root {
+                &.Mui-focused {
+                    color: #009688;
+                }
+            }
+        }
+    }
+
+    .create-group-dialog-actions {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: rgba(0, 0, 0, 0.2);
+
+        .create-group-dialog-settings-button {
+            color: rgba(255, 255, 255, 0.7);
+
+            &:hover {
+                color: rgba(255, 255, 255, 1);
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+        }
+
+        button {
+            text-transform: none;
+            font-weight: 500;
+        }
+    }
+}
+

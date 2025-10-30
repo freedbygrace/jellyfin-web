@@ -14,6 +14,7 @@ import Events, { Event } from 'utils/events';
 
 import AppSyncPlayMenu, { ID } from './menus/SyncPlayMenu';
 import SyncPlayDialog from './SyncPlayDialog';
+import CreateGroupDialog from './CreateGroupDialog';
 
 interface SyncPlayInstance {
     Manager: {
@@ -26,6 +27,7 @@ const SyncPlayButton = () => {
 
     const [syncPlayMenuAnchorEl, setSyncPlayMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [syncPlayDialogOpen, setSyncPlayDialogOpen] = useState(false);
+    const [createGroupDialogOpen, setCreateGroupDialogOpen] = useState(false);
     const [syncPlay, setSyncPlay] = useState<SyncPlayInstance>();
     const [currentGroup, setCurrentGroup] = useState<GroupInfoDto>();
     const [memberCount, setMemberCount] = useState(0);
@@ -93,6 +95,19 @@ const SyncPlayButton = () => {
         setSyncPlayDialogOpen(false);
     }, []);
 
+    const onOpenCreateDialog = useCallback(() => {
+        setCreateGroupDialogOpen(true);
+    }, []);
+
+    const onCreateGroupDialogClose = useCallback(() => {
+        setCreateGroupDialogOpen(false);
+    }, []);
+
+    const onGroupCreated = useCallback(() => {
+        // After group is created, open the main dialog
+        setSyncPlayDialogOpen(true);
+    }, []);
+
     if (
         // SyncPlay not enabled for user
         (user?.Policy && user.Policy.SyncPlayAccess === SyncPlayUserAccessType.None)
@@ -137,11 +152,18 @@ const SyncPlayButton = () => {
                 open={isSyncPlayMenuOpen}
                 anchorEl={syncPlayMenuAnchorEl}
                 onMenuClose={onSyncPlayMenuClose}
+                onOpenCreateDialog={onOpenCreateDialog}
             />
 
             <SyncPlayDialog
                 open={syncPlayDialogOpen}
                 onClose={onSyncPlayDialogClose}
+            />
+
+            <CreateGroupDialog
+                open={createGroupDialogOpen}
+                onClose={onCreateGroupDialogClose}
+                onGroupCreated={onGroupCreated}
             />
         </>
     );
