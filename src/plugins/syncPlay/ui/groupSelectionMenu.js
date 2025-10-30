@@ -9,6 +9,8 @@ import { ServerConnections } from 'lib/jellyfin-apiclient';
 import { PluginType } from '../../../types/plugin.ts';
 import Events from '../../../utils/events.ts';
 
+import prompt from '../../../components/prompt/prompt';
+
 import './groupSelectionMenu.scss';
 
 /**
@@ -84,11 +86,21 @@ class GroupSelectionMenu {
                     dialogClass: 'syncPlayGroupMenu'
                 };
 
-                actionsheet.show(menuOptions).then(function (id) {
+                actionsheet.show(menuOptions).then((id) => {
                     if (id == 'new-group') {
-                        apiClient.createSyncPlayGroup({
-                            GroupName: globalize.translate('SyncPlayGroupDefaultTitle', user.localUser.Name)
-                        });
+                        const defaultName = globalize.translate('SyncPlayGroupDefaultTitle', user.localUser.Name);
+                        prompt({
+                            title: globalize.translate('LabelSyncPlayNewGroup'),
+                            label: globalize.translate('LabelName'),
+                            value: defaultName
+                        }).then((name) => {
+                            const groupName = (name || '').trim();
+                            if (groupName) {
+                                apiClient.createSyncPlayGroup({
+                                    GroupName: groupName
+                                });
+                            }
+                        }).catch(() => { /* cancelled */ });
                     } else if (id) {
                         apiClient.joinSyncPlayGroup({
                             GroupId: id
