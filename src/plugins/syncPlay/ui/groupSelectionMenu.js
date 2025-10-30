@@ -10,6 +10,7 @@ import { PluginType } from '../../../types/plugin.ts';
 import Events from '../../../utils/events.ts';
 
 import CreateGroupDialog from './createGroupDialog';
+import prompt from '../../../components/prompt/prompt';
 
 import './groupSelectionMenu.scss';
 
@@ -94,7 +95,6 @@ class GroupSelectionMenu {
                                 defaultName,
                                 positionTo: button,
                                 onCreated: ({ positionTo }) => {
-                                    // After creation, open the group menu so user can access settings or leave
                                     try {
                                         this.showLeaveGroupSelection(positionTo, user, apiClient);
                                     } catch (e) {
@@ -102,7 +102,23 @@ class GroupSelectionMenu {
                                     }
                                 }
                             })
-                            .catch((err) => { if (err) { /* dialog cancelled */ } });
+                            .catch((err) => {
+                                console.error('SyncPlay: CreateGroupDialog failed, falling back to prompt', err);
+                                prompt({
+                                    title: globalize.translate('LabelSyncPlayNewGroup'),
+                                    label: globalize.translate('LabelName'),
+                                    value: defaultName
+                                }).then((name) => {
+                                    const groupName = (name || '').trim();
+                                    if (!groupName) return;
+                                    apiClient.createSyncPlayGroup({ GroupName: groupName });
+                                    try {
+                                        this.showLeaveGroupSelection(button, user, apiClient);
+                                    } catch (e) {
+                                        console.error('SyncPlay: failed to open group menu after prompt creation', e);
+                                    }
+                                }).catch(() => { /* cancelled */ });
+                            });
                     } else if (id) {
                         apiClient.joinSyncPlayGroup({
                             GroupId: id
