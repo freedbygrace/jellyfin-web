@@ -64,8 +64,7 @@ class CreateGroupDialog {
         // Explicit create button (create only)
         this.context.querySelector('.btnCreate')?.addEventListener('click', () => this.onCreate(false));
 
-        // Create and open lobby
-        this.context.querySelector('.btnCreateOpen')?.addEventListener('click', () => this.onCreate(true));
+        // Removed "Create and open lobby" per request
 
         // Settings button
         this.context.querySelector('.btnSettings')?.addEventListener('click', async () => {
@@ -78,29 +77,22 @@ class CreateGroupDialog {
         return dialogHelper.open(this.context);
     }
 
-    async onCreate(openAfter = false) {
+    async onCreate() {
         const btn1 = this.context.querySelector('.btnCreate');
-        const btn2 = this.context.querySelector('.btnCreateOpen');
         const name = (this.context.querySelector('#txtGroupName')?.value || '').trim();
         if (!name) {
             return;
         }
         if (btn1) btn1.disabled = true;
-        if (btn2) btn2.disabled = true;
         try {
             await this.apiClient.createSyncPlayGroup({ GroupName: name });
             // Close dialog first
             dialogHelper.close(this.context);
-            // Give a subtle confirmation
-            try { toast({ text: globalize.translate('SyncPlayEnabled') }); } catch (_) {}
-            // Allow caller to handle next step (e.g., show group menu)
-            if (this._onCreated && openAfter) {
-                this._onCreated({ name, positionTo: this._button });
-            }
+            // Subtle confirmation toast
+            try { toast({ text: globalize.translate('MessageSyncPlayEnabled') }); } catch (_) {}
         } catch (err) {
             console.error('SyncPlay: failed to create group', err);
             if (btn1) btn1.disabled = false;
-            if (btn2) btn2.disabled = false;
         }
     }
 }
