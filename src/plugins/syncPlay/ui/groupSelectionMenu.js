@@ -49,8 +49,8 @@ class GroupSelectionMenu {
     showNewJoinGroupSelection(button, user, apiClient) {
         const policy = user.localUser ? user.localUser.Policy : {};
 
-        apiClient.getSyncPlayGroups().then(function (response) {
-            response.json().then(function (groups) {
+        apiClient.getSyncPlayGroups().then((response) => {
+            response.json().then((groups) => {
                 const menuItems = groups.map(function (group) {
                     return {
                         name: group.GroupName,
@@ -132,7 +132,7 @@ class GroupSelectionMenu {
 
                 loading.hide();
             });
-        }).catch(function (error) {
+        }).catch((error) => {
             console.error(error);
             loading.hide();
             toast({
