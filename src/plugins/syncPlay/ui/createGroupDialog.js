@@ -57,12 +57,15 @@ class CreateGroupDialog {
         // Submit on enter
         this.context.querySelector('form')?.addEventListener('submit', (e) => {
             e?.preventDefault();
-            this.onCreate();
+            this.onCreate(false);
             return false;
         });
 
-        // Explicit create button
-        this.context.querySelector('.btnCreate')?.addEventListener('click', () => this.onCreate());
+        // Explicit create button (create only)
+        this.context.querySelector('.btnCreate')?.addEventListener('click', () => this.onCreate(false));
+
+        // Create and open lobby
+        this.context.querySelector('.btnCreateOpen')?.addEventListener('click', () => this.onCreate(true));
 
         // Settings button
         this.context.querySelector('.btnSettings')?.addEventListener('click', async () => {
@@ -75,13 +78,15 @@ class CreateGroupDialog {
         return dialogHelper.open(this.context);
     }
 
-    async onCreate() {
-        const btn = this.context.querySelector('.btnCreate');
+    async onCreate(openAfter = false) {
+        const btn1 = this.context.querySelector('.btnCreate');
+        const btn2 = this.context.querySelector('.btnCreateOpen');
         const name = (this.context.querySelector('#txtGroupName')?.value || '').trim();
         if (!name) {
             return;
         }
-        if (btn) btn.disabled = true;
+        if (btn1) btn1.disabled = true;
+        if (btn2) btn2.disabled = true;
         try {
             await this.apiClient.createSyncPlayGroup({ GroupName: name });
             // Close dialog first
@@ -89,12 +94,13 @@ class CreateGroupDialog {
             // Give a subtle confirmation
             try { toast({ text: globalize.translate('SyncPlayEnabled') }); } catch (_) {}
             // Allow caller to handle next step (e.g., show group menu)
-            if (this._onCreated) {
+            if (this._onCreated && openAfter) {
                 this._onCreated({ name, positionTo: this._button });
             }
         } catch (err) {
             console.error('SyncPlay: failed to create group', err);
-            if (btn) btn.disabled = false;
+            if (btn1) btn1.disabled = false;
+            if (btn2) btn2.disabled = false;
         }
     }
 }
