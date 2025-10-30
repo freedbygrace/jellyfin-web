@@ -5,6 +5,7 @@ import dialogHelper from '../../../components/dialogHelper/dialogHelper';
 import layoutManager from '../../../components/layoutManager';
 import globalize from '../../../lib/globalize';
 import toast from '../../../components/toast/toast';
+import template from './createGroupDialog.html';
 
 import 'material-design-icons-iconfont';
 import '../../../elements/emby-input/emby-input';
@@ -39,7 +40,6 @@ class CreateGroupDialog {
         this.context = dialogHelper.createDialog(dialogOptions);
         this.context.classList.add('formDialog');
 
-        const { default: template } = await import('./createGroupDialog.html');
         this.context.innerHTML = globalize.translateHtml(template, 'core');
 
         // Wire up controls
