@@ -94,13 +94,6 @@ class GroupSelectionMenu {
                             .embed({
                                 defaultName,
                                 positionTo: button,
-                                onCreated: ({ positionTo }) => {
-                                    try {
-                                        this.showLeaveGroupSelection(positionTo, user, apiClient);
-                                    } catch (e) {
-                                        console.error('SyncPlay: failed to open group menu after creation', e);
-                                    }
-                                }
                             })
                             .catch((err) => {
                                 console.error('SyncPlay: CreateGroupDialog failed, falling back to prompt', err);
@@ -151,6 +144,15 @@ class GroupSelectionMenu {
         const groupInfo = this.SyncPlay?.Manager.getGroupInfo();
         const menuItems = [];
 
+        // Explicit entry to return to the lobby menu
+        menuItems.push({
+            name: globalize.translate('LabelSyncPlayOpenLobby'),
+            icon: 'groups',
+            id: 'open-lobby',
+            selected: true,
+            secondaryText: globalize.translate('LabelSyncPlayOpenLobbyDescription')
+        });
+
         if (!this.SyncPlay?.Manager.isPlaylistEmpty()
             && !this.SyncPlay?.Manager.isPlaybackActive()) {
             menuItems.push({
@@ -182,7 +184,7 @@ class GroupSelectionMenu {
             name: globalize.translate('LabelSyncPlayLeaveGroup'),
             icon: 'meeting_room',
             id: 'leave-group',
-            selected: true,
+            selected: false,
             secondaryText: globalize.translate('LabelSyncPlayLeaveGroupDescription')
         });
 
@@ -196,7 +198,10 @@ class GroupSelectionMenu {
         };
 
         actionsheet.show(menuOptions).then((id) => {
-            if (id == 'resume-playback') {
+            if (id == 'open-lobby') {
+                // Explicitly reopen the lobby menu
+                this.showLeaveGroupSelection(button, user, apiClient);
+            } else if (id == 'resume-playback') {
                 this.SyncPlay?.Manager.resumeGroupPlayback(apiClient);
             } else if (id == 'halt-playback') {
                 this.SyncPlay?.Manager.haltGroupPlayback(apiClient);

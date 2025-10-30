@@ -88,8 +88,6 @@ class CreateGroupDialog {
             await this.apiClient.createSyncPlayGroup({ GroupName: name });
             // Close dialog first
             dialogHelper.close(this.context);
-            // Subtle confirmation toast
-            try { toast({ text: globalize.translate('MessageSyncPlayEnabled') }); } catch (_) {}
         } catch (err) {
             console.error('SyncPlay: failed to create group', err);
             if (btn1) btn1.disabled = false;
