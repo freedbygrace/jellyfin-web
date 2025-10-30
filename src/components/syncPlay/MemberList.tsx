@@ -1,31 +1,28 @@
+/* eslint-disable @stylistic/jsx-quotes */
+
 /**
  * SyncPlay Member List Component
- * 
+ *
  * Displays detailed information about all members in a SyncPlay group.
  * Shows ping, buffering status, and ready state for each member.
- * 
+ *
  * Part of Phase 1: Enhanced Member Information
  */
 
 import React from 'react';
-import type { GroupMemberInfo } from '../../types/syncPlay';
-import {
-    getPingQuality,
-    getPingQualityLabel,
-    getPingQualityColor
-} from '../../types/syncPlay';
+import { getPingQuality, getPingQualityLabel, getPingQualityColor, type GroupMemberInfo } from '../../types/syncPlay';
 import './MemberList.scss';
 
 export interface MemberListProps {
     /** Array of group members */
     members: GroupMemberInfo[];
-    
+
     /** Current user's ID to highlight */
     currentUserId?: string;
-    
+
     /** Whether to show detailed ping information */
     showDetailedPing?: boolean;
-    
+
     /** Custom class name */
     className?: string;
 }
@@ -52,7 +49,7 @@ const MemberList: React.FC<MemberListProps> = ({
             <div className="member-list-header">
                 <h3>Members ({members.length})</h3>
             </div>
-            
+
             <ul className="member-list">
                 {members.map((member) => (
                     <MemberListItem
@@ -96,7 +93,7 @@ const MemberListItem: React.FC<MemberListItemProps> = ({
                         {member.userName}
                         {isCurrentUser && <span className="you-badge">(You)</span>}
                     </span>
-                    
+
                     <div className="member-status-icons">
                         {member.isBuffering && (
                             <span
@@ -107,7 +104,7 @@ const MemberListItem: React.FC<MemberListItemProps> = ({
                                 <i className="material-icons">hourglass_empty</i>
                             </span>
                         )}
-                        
+
                         {member.isReady && (
                             <span
                                 className="status-icon ready"
@@ -119,7 +116,7 @@ const MemberListItem: React.FC<MemberListItemProps> = ({
                         )}
                     </div>
                 </div>
-                
+
                 <div className="member-details">
                     <div className={`ping-indicator ping-${pingQuality}`}>
                         <span

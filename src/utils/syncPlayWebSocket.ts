@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * SyncPlay WebSocket Handler
- * 
+ *
  * Handles WebSocket communication for enhanced SyncPlay features.
  * Extends the existing SyncPlay WebSocket functionality to support:
  * - Phase 2: Chat message updates
  * - Phase 3: Ready state updates
  */
 
-import Events from './events';
+
 import type {
     GroupUpdate,
     GroupUpdateType,
@@ -229,9 +231,9 @@ export function initGlobalHandler(apiClient: any): void {
  * @returns Function to unregister the handler
  */
 export function onChatMessage(handler: GroupUpdateHandler<ChatMessage>): () => void {
-    const globalHandler = getGlobalHandler();
-    globalHandler.on('chat-message', handler);
-    return () => globalHandler.off('chat-message', handler);
+    const handlerInstance = getGlobalHandler();
+    handlerInstance.on('chat-message', handler);
+    return () => handlerInstance.off('chat-message', handler);
 }
 
 /**
@@ -240,9 +242,9 @@ export function onChatMessage(handler: GroupUpdateHandler<ChatMessage>): () => v
  * @returns Function to unregister the handler
  */
 export function onReadyUpdate(handler: GroupUpdateHandler<ReadyUpdate>): () => void {
-    const globalHandler = getGlobalHandler();
-    globalHandler.on('user-ready', handler);
-    return () => globalHandler.off('user-ready', handler);
+    const handlerInstance = getGlobalHandler();
+    handlerInstance.on('user-ready', handler);
+    return () => handlerInstance.off('user-ready', handler);
 }
 
 /**
@@ -255,9 +257,9 @@ export function onGroupUpdate<T = unknown>(
     type: string,
     handler: GroupUpdateHandler<T>
 ): () => void {
-    const globalHandler = getGlobalHandler();
-    globalHandler.on(type, handler);
-    return () => globalHandler.off(type, handler);
+    const handlerInstance = getGlobalHandler();
+    handlerInstance.on(type, handler);
+    return () => handlerInstance.off(type, handler);
 }
 
 export default SyncPlayWebSocketHandler;

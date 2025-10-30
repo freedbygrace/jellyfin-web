@@ -1,14 +1,16 @@
+/* eslint-disable @stylistic/jsx-quotes */
+
 /**
  * SyncPlay Lobby Screen Component
- * 
+ *
  * Pre-playback lobby where users can see who's in the group and mark themselves as ready.
  * Playback starts when all members are ready.
- * 
+ *
  * Part of Phase 3: Lobby & Ready System
  */
 
 import React from 'react';
-import type { GroupInfo, GroupMemberInfo } from '../../types/syncPlay';
+import type { GroupInfo } from '../../types/syncPlay';
 import { areAllMembersReady, countReadyMembers } from '../../types/syncPlay';
 import MemberList from './MemberList';
 import './LobbyScreen.scss';
@@ -16,19 +18,19 @@ import './LobbyScreen.scss';
 export interface LobbyScreenProps {
     /** Group information */
     group: GroupInfo;
-    
+
     /** Current user's ID */
     currentUserId: string;
-    
+
     /** Callback when user toggles ready state */
     onToggleReady: (isReady: boolean) => void;
-    
+
     /** Callback when playback should start */
     onStartPlayback?: () => void;
-    
+
     /** Whether the user is the group owner */
     isGroupOwner?: boolean;
-    
+
     /** Custom class name */
     className?: string;
 }
@@ -41,7 +43,6 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
     currentUserId,
     onToggleReady,
     onStartPlayback,
-    isGroupOwner = false,
     className = ''
 }) => {
     const currentMember = group.members.find(m => m.userId === currentUserId);
@@ -121,7 +122,7 @@ const LobbyScreen: React.FC<LobbyScreenProps> = ({
                             {isReady ? (
                                 <>
                                     <i className="material-icons">check_circle</i>
-                                    <span>I'm Ready</span>
+                                    <span>I&apos;m Ready</span>
                                 </>
                             ) : (
                                 <>

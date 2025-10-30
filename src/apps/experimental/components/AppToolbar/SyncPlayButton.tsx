@@ -102,9 +102,9 @@ const SyncPlayButton = () => {
         return null;
     }
 
-    const tooltipTitle = isInGroup
-        ? `${globalize.translate('ButtonSyncPlay')}: ${currentGroup?.GroupName || ''}`
-        : globalize.translate('ButtonSyncPlay');
+    const tooltipTitle = isInGroup ?
+        `${globalize.translate('ButtonSyncPlay')}: ${currentGroup?.GroupName || ''}` :
+        globalize.translate('ButtonSyncPlay');
 
     return (
         <>
@@ -119,12 +119,12 @@ const SyncPlayButton = () => {
                 >
                     <Badge
                         badgeContent={memberCount}
-                        color="primary"
+                        color='primary'
                         invisible={!isInGroup}
                     >
                         <Badge
                             variant="dot"
-                            color="error"
+                            color='error'
                             invisible={!hasUnreadMessages}
                         >
                             <Groups />

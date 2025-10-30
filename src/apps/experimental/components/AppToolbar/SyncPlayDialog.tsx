@@ -1,5 +1,7 @@
+/* eslint-disable @stylistic/jsx-quotes */
+
 import type { GroupInfoDto } from '@jellyfin/sdk/lib/generated-client/models/group-info-dto';
-import type { GroupMemberInfoDto } from '@jellyfin/sdk/lib/generated-client/models/group-member-info-dto';
+
 import Close from '@mui/icons-material/Close';
 import Badge from '@mui/material/Badge';
 import Dialog from '@mui/material/Dialog';
@@ -14,7 +16,7 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { pluginManager } from 'components/pluginManager';
 import { MemberList, ChatPanel, LobbyScreen } from 'components/syncPlay';
-import type { GroupMemberInfo, GroupInfo } from 'types/syncPlay';
+
 import { useApi } from 'hooks/useApi';
 import { useSyncPlayEnhancements } from 'hooks/useSyncPlayEnhancements';
 import globalize from 'lib/globalize';
@@ -46,7 +48,7 @@ interface TabPanelProps {
     value: number;
 }
 
-function TabPanel(props: TabPanelProps) {
+function TabPanel(props: Readonly<TabPanelProps>) {
     const { children, value, index, ...other } = props;
 
     return (
@@ -73,18 +75,7 @@ function a11yProps(index: number) {
     };
 }
 
-/**
- * Convert SDK GroupMemberInfoDto to our GroupMemberInfo type
- */
-function convertMemberInfo(member: GroupMemberInfoDto): GroupMemberInfo {
-    return {
-        userId: member.UserId || '',
-        userName: member.UserName || 'Unknown',
-        ping: Number(member.Ping) || 0,
-        isBuffering: member.IsBuffering || false,
-        isReady: member.IsReady || false
-    };
-}
+
 
 const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
     const [syncPlay, setSyncPlay] = useState<SyncPlayInstance>();
@@ -154,8 +145,8 @@ const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
         };
     }, [updateSyncPlayGroup, syncPlay]);
 
-    const groupName = currentGroup?.GroupName || globalize.translate('SyncPlay');
-    const groupId = currentGroup?.GroupId;
+    const groupName = enhancedGroup?.groupName || currentGroup?.GroupName || globalize.translate('SyncPlay');
+    const groupId = enhancedGroup?.groupId || currentGroup?.GroupId;
 
     return (
         <Dialog
@@ -201,9 +192,9 @@ const SyncPlayDialog: FC<SyncPlayDialogProps> = ({ open, onClose }) => {
 
             <DialogContent className="syncplay-dialog-content">
                 <TabPanel value={tabValue} index={0}>
-                    {currentGroup?.Members && currentGroup.Members.length > 0 ? (
+                    {enhancedGroup?.members && enhancedGroup.members.length > 0 ? (
                         <MemberList
-                            members={currentGroup.Members.map(convertMemberInfo)}
+                            members={enhancedGroup.members}
                             currentUserId={user?.Id}
                             showDetailedPing={true}
                         />

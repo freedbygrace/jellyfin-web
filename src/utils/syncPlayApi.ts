@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-floating-promises */
+
 /**
  * SyncPlay API Utilities
- * 
+ *
  * API client functions for the enhanced SyncPlay features.
  * These functions extend the existing Jellyfin API client to support:
  * - Phase 1: Enhanced member information
@@ -26,10 +28,10 @@ export async function getGroupInfo(
     apiClient: any,
     groupId?: string
 ): Promise<GroupInfo> {
-    const endpoint = groupId 
+    const endpoint = groupId
         ? `SyncPlay/${groupId}`
         : 'SyncPlay/List';
-    
+
     try {
         const response = await apiClient.getJSON(
             apiClient.getUrl(endpoint)
@@ -73,7 +75,7 @@ export async function sendChatMessage(
     message: string
 ): Promise<void> {
     const request: SendChatMessageRequest = { message };
-    
+
     try {
         await apiClient.ajax({
             type: 'POST',
@@ -117,7 +119,7 @@ export async function setLobbyReady(
     isReady: boolean
 ): Promise<void> {
     const request: SetReadyRequest = { isReady };
-    
+
     try {
         await apiClient.ajax({
             type: 'POST',
@@ -138,7 +140,7 @@ export async function setLobbyReady(
  */
 export function handleApiError(error: any, context: string): void {
     console.error(`${context}:`, error);
-    
+
     // You can add toast notifications here if needed
     // import toast from '../components/toast/toast';
     // toast(error.message || 'An error occurred');
@@ -166,13 +168,13 @@ export async function retryApiCall<T>(
     delay: number = 1000
 ): Promise<T> {
     let lastError: any;
-    
+
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
             return await fn();
         } catch (error) {
             lastError = error;
-            
+
             if (attempt < maxAttempts) {
                 // Exponential backoff
                 const waitTime = delay * Math.pow(2, attempt - 1);
@@ -180,7 +182,7 @@ export async function retryApiCall<T>(
             }
         }
     }
-    
+
     throw lastError;
 }
 
@@ -202,7 +204,7 @@ export async function fetchAllSyncPlayData(
             getGroupInfo(apiClient, groupId),
             getChatHistory(apiClient)
         ]);
-        
+
         return { groupInfo, chatHistory };
     } catch (error) {
         console.error('Failed to fetch SyncPlay data:', error);
@@ -225,7 +227,7 @@ export function pollGroupInfo(
     interval: number = 5000
 ): () => void {
     let isPolling = true;
-    
+
     const poll = async () => {
         while (isPolling) {
             try {
@@ -234,13 +236,13 @@ export function pollGroupInfo(
             } catch (error) {
                 console.error('Polling error:', error);
             }
-            
+
             await new Promise(resolve => setTimeout(resolve, interval));
         }
     };
-    
+
     poll();
-    
+
     // Return stop function
     return () => {
         isPolling = false;

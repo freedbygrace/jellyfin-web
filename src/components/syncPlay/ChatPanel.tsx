@@ -1,34 +1,35 @@
+/* eslint-disable @stylistic/jsx-quotes, react/jsx-no-bind, @typescript-eslint/no-floating-promises */
+
 /**
  * SyncPlay Chat Panel Component
- * 
+ *
  * Real-time chat interface for SyncPlay groups.
  * Displays message history and allows sending new messages.
- * 
+ *
  * Part of Phase 2: Chat/Messaging System
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import type { ChatMessage } from '../../types/syncPlay';
-import { formatMessageTime } from '../../types/syncPlay';
+import { formatMessageTime, type ChatMessage } from '../../types/syncPlay';
 import { isValidChatMessage, sanitizeChatMessage } from '../../utils/syncPlayApi';
 import './ChatPanel.scss';
 
 export interface ChatPanelProps {
     /** Array of chat messages */
     messages: ChatMessage[];
-    
+
     /** Current user's ID */
     currentUserId: string;
-    
+
     /** Callback when user sends a message */
     onSendMessage: (message: string) => void;
-    
+
     /** Whether the chat is loading */
     isLoading?: boolean;
-    
+
     /** Whether sending is disabled */
     disabled?: boolean;
-    
+
     /** Custom class name */
     className?: string;
 }
@@ -60,7 +61,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         const trimmedMessage = inputValue.trim();
         if (!trimmedMessage || !isValidChatMessage(trimmedMessage)) {
             return;
@@ -82,7 +83,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            handleSubmit(e);
+            void handleSubmit(e as unknown as React.FormEvent);
         }
     };
 

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * SyncPlay Enhancements Hook
- * 
+ *
  * React hook for using the enhanced SyncPlay features.
  * Integrates with the existing SyncPlay plugin system.
  */
@@ -22,13 +24,13 @@ import {
 export interface UseSyncPlayEnhancementsOptions {
     /** The Jellyfin API client */
     apiClient: any;
-    
+
     /** Optional group ID */
     groupId?: string;
-    
+
     /** Whether to auto-load data on mount */
     autoLoad?: boolean;
-    
+
     /** Polling interval for group info (0 to disable) */
     pollingInterval?: number;
 }
@@ -36,28 +38,28 @@ export interface UseSyncPlayEnhancementsOptions {
 export interface UseSyncPlayEnhancementsReturn {
     /** Current group information */
     group: GroupInfo | null;
-    
+
     /** Chat message history */
     messages: ChatMessage[];
-    
+
     /** Whether data is loading */
     isLoading: boolean;
-    
+
     /** Whether WebSocket is connected */
     isConnected: boolean;
-    
+
     /** Error state */
     error: Error | null;
-    
+
     /** Reload group information */
     reloadGroup: () => Promise<void>;
-    
+
     /** Reload chat history */
     reloadChat: () => Promise<void>;
-    
+
     /** Send a chat message */
     sendMessage: (message: string) => Promise<void>;
-    
+
     /** Set ready state */
     setReady: (isReady: boolean) => Promise<void>;
 }
@@ -80,7 +82,7 @@ export function useSyncPlayEnhancements(
     const [isLoading, setIsLoading] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
     const [error, setError] = useState<Error | null>(null);
-    
+
     const pollingIntervalRef = useRef<number | null>(null);
     const isMountedRef = useRef(true);
 
@@ -145,11 +147,11 @@ export function useSyncPlayEnhancements(
         try {
             setError(null);
             await setLobbyReadyApi(apiClient, isReady);
-            
+
             // Optimistically update local state
             setGroup(prev => {
                 if (!prev) return prev;
-                
+
                 const currentUserId = apiClient.getCurrentUserId();
                 const updatedMembers = prev.members.map(member =>
                     member.userId === currentUserId
@@ -210,7 +212,7 @@ export function useSyncPlayEnhancements(
         // Try to get the SyncPlay Manager instance
         // This assumes the SyncPlay plugin exports its Manager
         const syncPlayManager = (window as any).SyncPlay?.Manager;
-        
+
         if (!syncPlayManager) {
             console.warn('SyncPlay Manager not found');
             return;
@@ -230,7 +232,7 @@ export function useSyncPlayEnhancements(
             if (isMountedRef.current) {
                 setGroup(prev => {
                     if (!prev) return prev;
-                    
+
                     const updatedMembers = prev.members.map(member =>
                         member.userId === update.userId
                             ? { ...member, isReady: update.isReady }

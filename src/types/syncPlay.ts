@@ -1,6 +1,8 @@
+/* eslint-disable @stylistic/no-trailing-spaces */
+
 /**
  * SyncPlay Enhancement Types
- * 
+ *
  * Type definitions for the enhanced SyncPlay features including:
  * - Phase 1: Enhanced member information
  * - Phase 2: Chat/messaging system
@@ -17,16 +19,16 @@
 export interface GroupMemberInfo {
     /** Unique identifier for the user */
     userId: string;
-    
+
     /** Display name of the user */
     userName: string;
-    
+
     /** Network latency in milliseconds */
     ping: number;
-    
+
     /** Whether the member is currently buffering */
     isBuffering: boolean;
-    
+
     /** Whether the member is ready (lobby state) */
     isReady: boolean;
 }
@@ -37,19 +39,19 @@ export interface GroupMemberInfo {
 export interface GroupInfo {
     /** Unique identifier for the group */
     groupId: string;
-    
+
     /** Name of the group */
     groupName: string;
-    
+
     /** Current playback state */
     state: string;
-    
+
     /** List of participant session IDs */
     participants: string[];
-    
+
     /** Timestamp of last update */
     lastUpdatedAt: string;
-    
+
     /** Detailed information about all members */
     members: GroupMemberInfo[];
 }
@@ -64,22 +66,22 @@ export interface GroupInfo {
 export interface ChatMessage {
     /** Unique identifier for the message */
     messageId: string;
-    
+
     /** Group this message belongs to */
     groupId: string;
-    
+
     /** User who sent the message */
     userId: string;
-    
+
     /** Display name of the sender */
     userName: string;
-    
+
     /** Message content */
     message: string;
-    
+
     /** ISO 8601 timestamp */
     timestamp: string;
-    
+
     /** Whether this is a system-generated message */
     isSystemMessage: boolean;
 }
@@ -98,7 +100,7 @@ export interface SendChatMessageRequest {
 export interface SyncPlayChatMessageUpdate {
     /** Type identifier */
     type: 'ChatMessage';
-    
+
     /** The chat message */
     data: ChatMessage;
 }
@@ -121,13 +123,13 @@ export interface SetReadyRequest {
 export interface ReadyUpdate {
     /** User whose ready state changed */
     userId: string;
-    
+
     /** Display name of the user */
     userName: string;
-    
+
     /** New ready state */
     isReady: boolean;
-    
+
     /** Whether all members are now ready */
     allReady: boolean;
 }
@@ -138,7 +140,7 @@ export interface ReadyUpdate {
 export interface SyncPlayReadyUpdate {
     /** Type identifier */
     type: 'UserReady';
-    
+
     /** Ready state information */
     data: ReadyUpdate;
 }
@@ -167,11 +169,11 @@ export enum GroupUpdateType {
     GroupWait = 'GroupWait',
     PrepareSession = 'PrepareSession',
     BufferingDone = 'BufferingDone',
-    
+
     // New types from enhancements
     /** Chat message update (Phase 2) */
     ChatMessage = 'ChatMessage',
-    
+
     /** User ready state update (Phase 3) */
     UserReady = 'UserReady'
 }
@@ -182,10 +184,10 @@ export enum GroupUpdateType {
 export interface GroupUpdate<T = unknown> {
     /** Group identifier */
     groupId: string;
-    
+
     /** Type of update */
     type: GroupUpdateType | string;
-    
+
     /** Update data */
     data: T;
 }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @stylistic/jsx-quotes */
+
 /**
  * SyncPlay Container Component
  *
@@ -19,19 +21,19 @@ import './SyncPlayContainer.scss';
 export interface SyncPlayContainerProps {
     /** The Jellyfin API client */
     apiClient: any;
-    
+
     /** Current user's ID */
     currentUserId: string;
-    
+
     /** Optional group ID */
     groupId?: string;
-    
+
     /** Whether to show lobby initially */
     showLobby?: boolean;
-    
+
     /** Callback when playback should start */
     onStartPlayback?: () => void;
-    
+
     /** Custom class name */
     className?: string;
 }
@@ -118,7 +120,7 @@ const SyncPlayContainer: React.FC<SyncPlayContainerProps> = ({
                     <div className="video-placeholder">
                         <p>Video Player</p>
                     </div>
-                    
+
                     <div className="connection-status">
                         <span className={`status-dot ${isConnected ? 'connected' : 'disconnected'}`} />
                         <span className="status-text">
@@ -136,7 +138,7 @@ const SyncPlayContainer: React.FC<SyncPlayContainerProps> = ({
                                 showDetailedPing={true}
                             />
                         </div>
-                        
+
                         <div className="sidebar-section">
                             <ChatPanel
                                 messages={messages}

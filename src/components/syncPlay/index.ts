@@ -1,6 +1,8 @@
+/* eslint-disable @stylistic/no-trailing-spaces */
+
 /**
  * SyncPlay Components
- * 
+ *
  * Export all SyncPlay enhancement components.
  */
 

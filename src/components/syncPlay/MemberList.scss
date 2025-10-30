@@ -1,6 +1,6 @@
 /**
  * SyncPlay Member List Styles
- * 
+ *
  * Styles for the member list component showing detailed member information.
  */
 
@@ -9,12 +9,12 @@
     flex-direction: column;
     height: 100%;
     background: var(--background-color, #1a1a1a);
-    color: var(--text-color, #ffffff);
+    color: var(--text-color, #fff);
 
     &.empty {
         justify-content: center;
         align-items: center;
-        
+
         .empty-message {
             color: var(--text-muted-color, #999);
             font-style: italic;
@@ -24,7 +24,7 @@
     .member-list-header {
         padding: 1rem;
         border-bottom: 1px solid var(--border-color, #333);
-        
+
         h3 {
             margin: 0;
             font-size: 1.1rem;
@@ -49,14 +49,7 @@
             background-color: var(--hover-background-color, #252525);
         }
 
-        &.current-user {
-            background-color: var(--current-user-background, rgba(0, 122, 255, 0.1));
-            
-            .member-name {
-                font-weight: 600;
-            }
-        }
-
+        // Base styles for all member items
         .member-info {
             display: flex;
             flex-direction: column;
@@ -74,6 +67,15 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+        }
+
+        // Current user modifier
+        &.current-user {
+            background-color: var(--current-user-background, rgba(0, 122, 255, 0.1));
+
+            .member-name {
+                font-weight: 600;
+            }
         }
 
         .you-badge {
@@ -158,18 +160,22 @@
 
 // Animations
 @keyframes pulse {
-    0%, 100% {
+    0%,
+ 100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.5;
     }
 }
 
 @keyframes blink {
-    0%, 100% {
+    0%,
+ 100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.3;
     }
@@ -196,7 +202,7 @@
 @media (prefers-color-scheme: dark) {
     .syncplay-member-list {
         --background-color: #1a1a1a;
-        --text-color: #ffffff;
+        --text-color: #fff;
         --text-muted-color: #999;
         --text-secondary-color: #ccc;
         --border-color: #333;
@@ -211,8 +217,8 @@
 // Light theme adjustments
 @media (prefers-color-scheme: light) {
     .syncplay-member-list {
-        --background-color: #ffffff;
-        --text-color: #000000;
+        --background-color: #fff;
+        --text-color: #000;
         --text-muted-color: #666;
         --text-secondary-color: #555;
         --border-color: #e0e0e0;
@@ -223,4 +229,3 @@
         --success-color: #34c759;
     }
 }
-
